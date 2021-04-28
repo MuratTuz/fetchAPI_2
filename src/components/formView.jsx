@@ -1,59 +1,85 @@
-import { Form, Button } from "react-bootstrap";
+import { Formik, Form, Field } from "formik";
+import { Button } from "react-bootsrap";
+import * as Yup from "yup";
 
-import useFetchAPI from "../services/useFetchAPI";
-import { InfoAlert } from "../services/alertService";
+const SignupSchema = Yup.object().shape({
+  firstName: Yup.string()
+    .min(2, "Too Short!")
+    .max(50, "Too Long!")
+    .required("First Name is required "),
+  lastName: Yup.string()
+    .min(2, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Last Name is required"),
+  gender: Yup.string().oneOf(["F", "M"]).required("Gernder is required"),
+  birthday: Yup.date()
+    .min(new Date("01-01-1900"))
+    .max(new Date())
+    .required("Date is required"),
+  email: Yup.string().email("Invalid email").required("Required"),
+  password: Yup.string()
+    .min(4, "Password is too short - should be 4 characters minimum.")
+    .matches(
+      /[a-zA-Z0-9]/,
+      "Password can only contain Latin letters and numbers."
+    )
+    .required("No password provided."),
+  about: Yup.string()
+    .min(3, "Too Short!")
+    .max(50, "Too Long!")
+    .required("About field is required "),
+});
 
-const FormView = () => {
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    let fetchAPIResponse = "";
-    console.log("Your favorite flavor is: " + event.target.value);
-    try {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      fetchAPIResponse = await useFetchAPI(event.target.value, "POST");
-    } catch (error) {
-      InfoAlert("FetchAPI cannot POST your form data");
-    } finally {
-      console.log(fetchAPIResponse);
-    }
-  };
-
+const FormView = (params) => {
   return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Group controlId="formFirstName">
-        <Form.Label>First Name</Form.Label>
-        <Form.Control type="text" placeholder="First Name" />
-      </Form.Group>
-      <Form.Group controlId="formLastName">
-        <Form.Label>Last Name</Form.Label>
-        <Form.Control type="text" placeholder="Last Name" />
-      </Form.Group>
-      <Form.Group controlId="formGender">
-        <Form.Label>Gender</Form.Label>
-        <Form.Control type="text" placeholder="Gender" />
-      </Form.Group>
-      <Form.Group controlId="formBirthday">
-        <Form.Label>Birthday</Form.Label>
-        <Form.Control type="text" placeholder="Birthday" />
-      </Form.Group>
-      <Form.Group controlId="formEmail">
-        <Form.Label>Email</Form.Label>
-        <Form.Check type="email" placeholder="Email" />
-      </Form.Group>
-      <Form.Group controlId="formPassword">
-        <Form.Label>Password</Form.Label>
-        <Form.Control type="password" placeholder="Password" />
-      </Form.Group>
-      <Form.Group controlId="formAboutme">
-        <Form.Label>About me</Form.Label>
-        <Form.Check type="text" placeholder="About me" />
-      </Form.Group>
-      <Button variant="primary" type="submit">
-        Submit
-    </Button>
-    </Form>
+    <>
+      <h1>Data Form View</h1>
+      <Formik
+        validationSchema={SignupSchema}
+        onSubmit={(values) => params.handleSubmit(values)}
+        initialValues={{
+          firstName: "",
+          lastName: "",
+          gender: "",
+          birthdate: "",
+          email: "",
+          password: "",
+          about: "",
+        }}
+      >
+        {({ touched, errors }) => (
+          <Form>
+            <Field name="firstName" />
+            {errors.firstName && touched.firstName ? (
+              <div>{errors.firstName}</div>
+            ) : null}
+            <Field name="lastName" />
+            {errors.lastName && touched.lastName ? (
+              <div>{errors.lastName}</div>
+            ) : null}
+            <Field name="gender" />
+            {errors.gender && touched.gender ? (
+              <div>{errors.gender}</div>
+            ) : null}
+            <Field name="birthday" />
+            {errors.birthday && touched.birthday ? (
+              <div>{errors.birthday}</div>
+            ) : null}
+            <Field name="email" />
+            {errors.email && touched.email ? <div>{errors.email}</div> : null}
+            <Field name="password" />
+            {errors.password && touched.password ? (
+              <div>{errors.password}</div>
+            ) : null}
+            <Field name="about" />
+            {errors.about && touched.about ? <div>{errors.about}</div> : null}
+
+            <Button type="submit">Submit form</Button>
+          </Form>
+        )}
+      </Formik>
+    </>
   );
-}
+};
 
 export default FormView;
