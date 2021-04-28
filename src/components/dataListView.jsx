@@ -1,4 +1,4 @@
-import { Table } from "react-bootsrap";
+import { Table } from "react-bootstrap";
 
 /**
  * This component creates a table view of JSON data

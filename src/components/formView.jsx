@@ -1,5 +1,5 @@
 import { Formik, Form, Field } from "formik";
-import { Button } from "react-bootsrap";
+import { Button } from "react-bootstrap";
 import * as Yup from "yup";
 
 const SignupSchema = Yup.object().shape({
@@ -36,7 +36,7 @@ const FormView = (params) => {
       <h1>Data Form View</h1>
       <Formik
         validationSchema={SignupSchema}
-        onSubmit={(values) => params.handleSubmit(values)}
+        onSubmit={(values) => params.formSubmit(values)}
         initialValues={{
           firstName: "",
           lastName: "",

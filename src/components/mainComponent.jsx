@@ -3,7 +3,7 @@ import DataListView from "./dataListView";
 import { Container, Row, Col } from "react-bootstrap";
 
 import runFetchAPI from "../services/runFetchAPI";
-import { InfoAlert } from "../services/alertService";
+import InfoAlert from "../services/alertService";
 import { useEffect, useState } from "react";
 
 const MainComponent = () => {
