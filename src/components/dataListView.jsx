@@ -20,7 +20,6 @@ const TableHeader = (params) => {
 
   const tableHeaderBody = (
     <tr>
-      <th>No</th>
       {tableHeaderColumns}
     </tr>
   );
@@ -53,7 +52,7 @@ const TableBody = (params) => {
 const DataListView = (params) => {
   return (
     <>
-      <h1>Data table View</h1>
+      <h1>Data List View</h1>
       <Table responsive striped bordered hover>
         <thead>
           <TableHeader data={params.data} />
