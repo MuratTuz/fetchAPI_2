@@ -6,12 +6,14 @@ import runFetchAPI from "../services/runFetchAPI";
 import InfoAlert from "../services/alertService";
 import { useEffect, useState } from "react";
 
+import FormExample from './deneme';
+
 const MainComponent = () => {
   const [postResponce, setPostResponce] = useState("");
   const [getResponse, setGetResponse] = useState("");
 
   useEffect(() => {
-    postResponce && fetchData();
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postResponce]);
 
@@ -19,18 +21,19 @@ const MainComponent = () => {
     try {
       setGetResponse(await runFetchAPI("GET"));
     } catch (error) {
-      InfoAlert("FetchAPI cannot POST your form data");
+      InfoAlert("FetchAPI cannot GET data");
     } finally {
       console.log(getResponse);
     }
   };
 
   const handleSubmit = async (values) => {
-    // const data = new FormData(values);
+    
     let fetchAPIResponse = "";
-    console.log("Form values " + values);
+    const data = JSON.stringify(values);
+    console.log("Form values " + data);
     try {
-      fetchAPIResponse = await runFetchAPI("POST", values);
+      fetchAPIResponse = await runFetchAPI("POST", data);
       setPostResponce(fetchAPIResponse);
     } catch (error) {
       InfoAlert("FetchAPI cannot POST your form data");
@@ -40,12 +43,12 @@ const MainComponent = () => {
   };
 
   return (
-    <Container>
-      <Row>
-        <Col>
-          <FormView formSubmit={handleSubmit} />
+    <Container className="container-fluid">
+      <Row className="justify-content-md-center">
+        <Col sm={6}>
+         <FormView formSubmit={handleSubmit} />
         </Col>
-        <Col>
+        <Col sm={6}>
           <DataListView data={getResponse} />
         </Col>
       </Row>
