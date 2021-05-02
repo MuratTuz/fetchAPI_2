@@ -2,38 +2,40 @@ import FormView from "./formView";
 import DataListView from "./dataListView";
 import { Container, Row, Col } from "react-bootstrap";
 
-import runFetchAPI from "../services/runFetchAPI";
+import {getEmployeeService, postEmployeeService} from "../services/employee-service";
 import InfoAlert from "../services/alertService";
 import { useEffect, useState } from "react";
 
-import FormExample from './deneme';
+import { Link, Route, Switch } from "react-router-dom";
+
+import Navigation from './navigation';
+
 
 const MainComponent = () => {
   const [postResponce, setPostResponce] = useState("");
   const [getResponse, setGetResponse] = useState("");
 
   useEffect(() => {
-    fetchData();
+    postResponce && getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postResponce]);
 
-  const fetchData = async () => {
+  const getData = async () => {
     try {
-      setGetResponse(await runFetchAPI("GET"));
+      setGetResponse(await getEmployeeService());
     } catch (error) {
-      InfoAlert("FetchAPI cannot GET data");
+      InfoAlert("FetchAPI cannot POST your form data");
     } finally {
       console.log(getResponse);
     }
   };
 
   const handleSubmit = async (values) => {
-    
+    // const data = new FormData(values);
     let fetchAPIResponse = "";
-    const data = JSON.stringify(values);
-    console.log("Form values " + data);
+    console.log("Form values " + values);
     try {
-      fetchAPIResponse = await runFetchAPI("POST", data);
+      fetchAPIResponse = await postEmployeeService(values);
       setPostResponce(fetchAPIResponse);
     } catch (error) {
       InfoAlert("FetchAPI cannot POST your form data");
@@ -43,16 +45,22 @@ const MainComponent = () => {
   };
 
   return (
-    <Container className="container-fluid">
-      <Row className="justify-content-md-center">
-        <Col sm={6}>
-         <FormView formSubmit={handleSubmit} />
-        </Col>
-        <Col sm={6}>
-          <DataListView data={getResponse} />
-        </Col>
-      </Row>
-    </Container>
+    <>
+      <header className="App-header">
+      <Navigation/>
+      </header>
+      <main>
+        <Switch>
+          <Route path="/post" >
+             <FormView formSubmit={handleSubmit} />
+          </Route>
+          <Route path="/get"> 
+           <DataListView data={getResponse} />
+           </Route>
+        </Switch>
+      </main>
+    </>
+
   );
 };
 
